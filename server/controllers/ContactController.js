@@ -1,15 +1,27 @@
-let contacts = require("../contacts");
+//let contact_list = require("../contacts");
+const ContactModel = require("../models/ContactModel");
 
 module.exports.list = function list(req, res) {
-    return res.json(contacts);
+    ContactModel.find({}).exec()
+    .then(contacts => {
+        return res.json(contacts);
+    })
+    
 }
 module.exports.show = function show(req,res) {
-    return res.json(contacts[req.params.id-1]);
+    ContactModel.findById(req.params.id).exec()
+    .then(contact => {
+        return res.json(contact);
+    })
 } 
 module.exports.create = function create(req,res) {
-    req.body["_id"] = contacts[contacts.length-1]._id+1;
-    contacts.push(req.body);
-    return res.json(contacts);
+
+    const newContact = new ContactModel(req.body)
+
+    newContact.save()
+    .then(contact => {
+        return res.json(contact)
+    })
 }
 module.exports.update = function update(req,res) {
     return false;

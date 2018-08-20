@@ -1,15 +1,26 @@
-let products = require("../products");
+//let products = require("../products");
+let ProductModel = require("../models/ProductModel");
 
 module.exports.list = function list(req,res){
-    return res.json(products);
+    ProductModel.find({}).exec()
+    .then(products => {
+        return res.json(products);
+    })
 }
 module.exports.show = function show(req,res){
-    return res.json(products[req.params.id-1]);
+    ProductModel.findById(req.params.id).exec()
+    .then(product => {
+        return res.json(product);
+    })
 }
 module.exports.create = function create(req,res){
-    req.body["_id"] = products[products.length-1]._id+1;
-    products.push(req.body);
-    return res.json(products);
+
+    const newProduct = new ProductModel(req.body)
+
+    newProduct.save()
+    .then(contact => {
+        return res.json(contact)
+    })
 }
 module.exports.update = function update(req,res){
     return false;
